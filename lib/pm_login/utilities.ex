@@ -2,6 +2,11 @@ defmodule PmLogin.Utilities do
   use Phoenix.HTML
   import PmLoginWeb.Gettext
 
+  def local_gmt3 do
+    NaiveDateTime.local_now
+    |>NaiveDateTime.add(3)
+  end
+
   def test do
     now = NaiveDateTime.local_now
     Calendar.strftime(now, "%d/%m/%Y %Hh %M")

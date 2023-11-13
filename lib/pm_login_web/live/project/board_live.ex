@@ -22,6 +22,7 @@ defmodule PmLoginWeb.Project.BoardLive do
   alias PmLogin.Monitoring.Comment
   alias PmLoginWeb.Router.Helpers, as: Routes
   alias PmLogin.Email
+  alias PmLogin.Utilities
 
   def mount(_params, %{"curr_user_id" => curr_user_id, "pro_id" => pro_id}, socket) do
     if connected?(socket), do: Kanban.subscribe()
@@ -72,15 +73,16 @@ defmodule PmLoginWeb.Project.BoardLive do
     tasks = Monitoring.list_tasks_by_project(pro_id)
     tasks_history = Monitoring.list_history_tasks_by_project(pro_id)
 
+
     task_history = List.first(Monitoring.get_last_history_task_with_reason_to_be_checked(pro_id, curr_user_id))
-    from_status = if not is_nil(task_history), do: task_history.status_from_id, else: 1
-    to_status = if not is_nil(task_history), do: task_history.status_to_id, else: 1
+    #from_status = if not is_nil(task_history), do: task_history.status_from_id, else: 1
+    #to_status = if not is_nil(task_history), do: task_history.status_to_id, else: 1
     # test_bool = if not is_nil(task_history) and (from_status > to_status), do: true, else: false
     # IO.puts from_status
     # IO.puts to_status
     # IO.puts test_bool
-
-    show_reason_task_history_modal = if (not is_nil(task_history)) and (is_nil(task_history.reason) and ((from_status > to_status) or (to_status == 2) or (to_status == 0))), do: true, else: false
+## On à retirer (from statut>to_statut)
+    #show_reason_task_history_modal = if (not is_nil(task_history)) and (is_nil(task_history.reason)) and  (to_status == 2) or (to_status == 0), do: true, else: false
 
     # IO.inspect task_history
     # IO.puts show_reason_task_history_modal
@@ -88,6 +90,7 @@ defmodule PmLoginWeb.Project.BoardLive do
     {:ok,
      socket
      |> assign(
+       empty_reason: nil,
        is_attributor: Monitoring.is_attributor?(curr_user_id),
        is_admin: Monitoring.is_admin?(curr_user_id),
        show_plus_modal: false,
@@ -100,7 +103,7 @@ defmodule PmLoginWeb.Project.BoardLive do
        attributors: list_attributors,
        priorities: list_priorities,
        board: primary_board,
-       show_reason_task_history_modal: show_reason_task_history_modal,
+       show_reason_task_history_modal: false,
        show_task_modal: false,
        show_modif_modal: false,
        show_modif_menu: false,
@@ -141,7 +144,9 @@ defmodule PmLoginWeb.Project.BoardLive do
        total: 0,
        tasks: tasks,
        tasks_history: tasks_history,
-       task_history: task_history
+       task_history: task_history,
+       attrs_history: nil,
+       old_task: nil
      )
      |> allow_upload(:file,
        accept:
@@ -165,14 +170,32 @@ defmodule PmLoginWeb.Project.BoardLive do
     }
   end
 
+    # Task History init in socket 2.0
+  def init_task_history2(attrs_history, socket) do
+    # IO.puts "--------------------------------------------------------------------------- INIT TASK HISTORY ---------------------------------------------------------------------------"
+    # IO.inspect task_history
+    # IO.puts show_reason_task_history_modal
+    {:noreply,
+      socket
+      |> assign(
+        attrs_history: attrs_history
+        )
+    }
+  end
+
   # Handle task history event on reason needed
   def handle_event("confirm_reason", params, socket) do
-    # IO.puts "------------------------------------------------------------------ NEED REASON ------------------------------------------------------------------ "
-    task_history = socket.assigns.task_history
-    attrs = %{
-      "reason" => params["reason"]
-    }
-    case task_history |> Monitoring.update_task_history_reason(attrs) do
+    IO.puts "------------------------------------------------------------------ NEED REASON ------------------------------------------------------------------ "
+    #task_history = socket.assigns.task_history
+    attrs_history = socket.assigns.attrs_history
+    IO.inspect attrs_history
+    #attrs = %{
+    #  "reason" => params["reason"]
+    #}
+    new_attrs = Map.put(attrs_history,"reason",params["reason"])
+    IO.puts "------------------------------------------------------------------ WITH REASON ------------------------------------------------------------------ "
+    IO.inspect new_attrs
+    case Monitoring.create_task_history(new_attrs) do
       {:ok, _task_history} ->
         {:noreply,
          socket
@@ -181,8 +204,13 @@ defmodule PmLoginWeb.Project.BoardLive do
          |> push_redirect(to: socket.assigns.ref)
         }
 
-      {:error} ->
-        {:noreply, socket}
+      {:error, changeset} ->
+        IO.inspect changeset
+        {empty_reason, _} = changeset.errors[:reason]
+
+        IO.inspect empty_reason
+        IO.puts "ERREUR CHANGESET"
+        {:noreply, socket |> assign(empty_reason: empty_reason)}
     end
   end
 
@@ -350,7 +378,8 @@ defmodule PmLoginWeb.Project.BoardLive do
      |> assign(delete_task_modal: false)
      |> put_flash(:info, "Tâche #{task.title} supprimé.")
      |> push_event("AnimateAlert", %{})
-     |> push_redirect(to: socket.assigns.ref)}
+     |> push_redirect(to: socket.assigns.ref)
+    }
   end
 
   def handle_event(
@@ -907,7 +936,7 @@ defmodule PmLoginWeb.Project.BoardLive do
     show_planified = socket.assigns.show_planified
     show_planified_list = socket.assigns.show_planified_list
     show_del_plan = socket.assigns.show_del_plan
-    show_reason_task_history_modal = socket.assigns.show_reason_task_history_modal
+    #show_reason_task_history_modal = socket.assigns.show_reason_task_history_modal
 
     s_task_modal =
       if key == "Escape" and show_task_modal == true, do: false, else: show_task_modal
@@ -944,7 +973,7 @@ defmodule PmLoginWeb.Project.BoardLive do
 
     s_del_plan = if key == "Escape" and show_del_plan == true, do: false, else: show_del_plan
 
-    s_reason_task_history_modal = if key == "Escape" and show_reason_task_history_modal == true, do: false, else: show_reason_task_history_modal
+    #s_reason_task_history_modal = if key == "Escape" and show_reason_task_history_modal == true, do: false, else: show_reason_task_history_modal
 
     {:noreply,
      socket
@@ -962,7 +991,7 @@ defmodule PmLoginWeb.Project.BoardLive do
        show_planified: s_planified,
        show_planified_list: s_planified_list,
        show_del_plan: s_del_plan,
-       show_reason_task_history_modal: s_reason_task_history_modal
+       #show_reason_task_history_modal: s_reason_task_history_modal
      )}
   end
 
@@ -1076,6 +1105,7 @@ defmodule PmLoginWeb.Project.BoardLive do
 
   def handle_event("update_card", %{"card" => card_attrs}, socket) do
     card = Kanban.get_card!(card_attrs["id"])
+    # old_task = Monitoring.get_task!(card.task_id)
     # IO.inspect card_attrs
     # IO.inspect updated_stage
     # IO.puts "before"
@@ -1105,26 +1135,41 @@ defmodule PmLoginWeb.Project.BoardLive do
           :status_from_id => old_task.status_id,
           :status_to_id => updated_stage.status_id
         }
-        show_reason_task_history_modal = if old_task.status_id > updated_stage.status_id, do: true, else: false
+
+        show_reason_task_history_modal = if (old_task.status_id > updated_stage.status_id) or (old_task.status_id == 2 and updated_stage.status_id != 2 ) or (old_task.status_id == 1 and updated_stage.status_id == 2) , do: true, else: false
         idem_status = if old_task.status_id == updated_stage.status_id, do: true, else: false
 
         IO.inspect task_history
         IO.puts show_reason_task_history_modal
         IO.puts "IDEM STATUS"
-        IO.puts idem_status
+        IO.inspect idem_status
 
-        init_task_history(task_history, show_reason_task_history_modal, socket)
+        #init_task_history(task_history, show_reason_task_history_modal, socket)
 
-        if not idem_status do
+        #if not idem_status do
           #task_history = socket.assigns.task_history
-          attrs = %{
+          attrs_history = %{
             "task_id" => task_history.task_id,
             "intervener_id" => task_history.intervener_id,
             "status_from_id" => task_history.status_from_id,
             "status_to_id" => task_history.status_to_id
           }
-          Monitoring.create_task_history(attrs)
-        end
+          # pour créer une historique sans motif#################################################
+          if show_reason_task_history_modal == false and (idem_status == false) do
+            new_attrs = Map.put(attrs_history,"reason","Aucun")
+            Monitoring.create_task_history(new_attrs)
+            {:ok, real_task} = Monitoring.update_task_status(updated_task, task_attrs)
+            {:noreply,
+            socket
+            |> push_event("AnimateAlert", %{})
+            |> push_redirect(to: socket.assigns.ref)
+            }
+          end
+          #Monitoring.create_task_history(attrs)
+          IO.inspect attrs_history
+
+          #init_task_history2(attrs,socket)
+        #end
 
         # IO.inspect Monitoring.update_task_status(updated_task, task_attrs)
         {:ok, real_task} = Monitoring.update_task_status(updated_task, task_attrs)
@@ -1146,7 +1191,7 @@ defmodule PmLoginWeb.Project.BoardLive do
           # if real_task.status_id == 5 do
           if Services.check_tasks_undone_in_request(request) == nil do
             params = %{
-              "date_done" => NaiveDateTime.local_now(),
+              "date_done" => PmLogin.Utilities.local_gmt3(),
               "done" => true
             }
 
@@ -1294,7 +1339,7 @@ defmodule PmLoginWeb.Project.BoardLive do
         new_board = struct(board, stages: new_stages)
 
 
-        {:noreply, post_socket |> assign(board: new_board, email: email, id: id, show_reason_task_history_modal: true)}
+        {:noreply, post_socket |> assign(board: new_board, email: email, id: id, show_reason_task_history_modal: show_reason_task_history_modal,attrs_history: attrs_history,old_task: old_task)}
 
       # {:noreply, update(socket, :board, fn _ -> Kanban.get_board!() end)}
 

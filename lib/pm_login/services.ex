@@ -1460,8 +1460,13 @@ defmodule PmLogin.Services do
   def current_date do
     {:ok, date} = :calendar.universal_time
     |> :calendar.universal_time_to_local_time
+    #|> NaiveDateTime.from_erl
     |> NaiveDateTime.from_erl
+    IO.puts("++++++++++++++++++++++++++++++++DATE++++++++++++++++++++++++++++++++++++")
+    IO.inspect date
+    IO.inspect PmLogin.Utilities.local_gmt3()
     date
+
   end
 
   def list_rights_clients do

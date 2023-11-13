@@ -17,21 +17,21 @@
                     </div>
                   </h2>
                 <% end %>
-              
+
                 <%= if @is_contributor do %>
                   <h2 style="margin: 0; font-size: 12px; display: flex;">
                     <span><a href={ Routes.contributor_path(@socket, :my_projects) } class="btn btn-lg btn-secondary"><i
                       class="bi bi-arrow-bar-left"></i> Retour</a></span>
-                    <i class="bi bi-list-task" style="font-size: 20px"></i> 
+                    <i class="bi bi-list-task" style="font-size: 20px"></i>
                     <div style="margin: 4 0 0 8">
                       Mes tâches sur "<%= @board.project.title %>"
                     </div>
                   </h2>
                 <% end %>
-              
+
                 <div class=" " style="margin: -31px 0 0 0; float: right;">
                   <p style="font-size: 10px; margin-bottom: 0px;"><!-- pour <b>
-                      <%= @board.project.active_client.company.name %> 
+                      <%= @board.project.active_client.company.name %>
                     </b>--><img class="profile-pic-header" src={
                       Routes.static_path(@socket, "/#{@board.project.active_client.company.logo}" ) } width="50"
                       style="position: relative; top: 10px; margin-left: 10px;" />
@@ -52,7 +52,7 @@
 
                   <span class="material-icons-round filter_icon filtandsortico filtericon_resized">person</span>
                   <form class="form_under_fieldset" phx-change="attributor_selected">
-        
+
                     <select class="field_under_form_under_fieldset select__resized" id="task_filter" name="attributor_select">
                       <option value="" selected disabled hidden>Attributeur</option>
                       <option value="9000">Tout</option>
@@ -62,13 +62,13 @@
                       </option>
                       <% end %>
                     </select>
-    
+
                   </form>
-    
+
                 <span
                   class="material-icons-round filter_icon filtandsortico filtericon_resized">supervisor_account</span>
                 <form class="form_under_fieldset" phx-change="contributor_selected">
-    
+
                   <select class="field_under_form_under_fieldset select__resized" id="task_filter"
                     name="contributor_select">
                     <option value="" selected disabled hidden>Contributeur</option>
@@ -80,15 +80,15 @@
                     <% end %>
                     <option value="-1">Sans contributeur</option>
                   </select>
-    
+
                 </form>
-    
+
                 <% end %>
-                
+
                 <%= if @is_admin or @is_attributor do %>
                   <span class="material-icons-round filt_andsortico filtericon_resized">search</span>
                 <% end %>
-                
+
                 <form class="form_under_fieldset" phx-change="search_task">
                   <input class="field_under_form_under_fieldset select__resized" autocomplete="off" type="text"
                     name="search-a" style="max-width: 100px; line-height: 10px;" placeholder="Rechercher ici">
@@ -147,28 +147,28 @@
               <%= if @is_admin or @is_attributor do %>
                 <div class="column" style="max-width: 42%; margin-top: -10px;">
                   <%= if @is_admin or @is_attributor or @is_contributor do %>
-                    <div 
-                      class="card-button-green" 
-                      type="button" 
+                    <div
+                      class="card-button-green"
+                      type="button"
                       phx-click="show_task_modal"
                       style="font-size: 10px; height: 30px; margin-top: 4px;"
                     >
                       Nouvelle tâche
                     </div>
 
-                    <div 
-                      class="card-button" 
-                      type="button" 
+                    <div
+                      class="card-button"
+                      type="button"
                       phx-click="show-secondary"
                       style="font-size: 10px; height: 30px; margin-top: 4px;"
                     >
                       Création sous-tâche
                     </div>
-                    
+
                     <%= if @is_admin or @is_attributor do %>
-                      <div 
-                        class="card-button-orange" 
-                        type="button" 
+                      <div
+                        class="card-button-orange"
+                        type="button"
                         phx-click="show_hidden_tasks"
                         style="font-size: 10px; height: 30px; margin-top: 4px;"
                       >
@@ -181,28 +181,28 @@
               <% else %>
                 <div class="column" style="min-width: 25%">
                   <%= if @is_admin or @is_attributor or @is_contributor do %>
-                  <div 
-                    class="card-button-green" 
-                    type="button" 
+                  <div
+                    class="card-button-green"
+                    type="button"
                     phx-click="show_task_modal"
                     style="font-size: 10px; height: 30px; margin-top: -8px;"
                   >
                     Nouvelle tâche
                   </div>
 
-                  <div 
-                    class="card-button" 
-                    type="button" 
+                  <div
+                    class="card-button"
+                    type="button"
                     phx-click="show-secondary"
                     style="font-size: 10px; height: 30px; margin-top: -8px;"
                   >
                     Création sous-tâche
                   </div>
-                    
+
                     <%= if @is_admin or @is_attributor do %>
-                      <div 
-                        class="card-button-orange" 
-                        type="button" 
+                      <div
+                        class="card-button-orange"
+                        type="button"
                         phx-click="show_hidden_tasks"
                         style="font-size: 10px; height: 30px; margin-top: 4px;"
                       >
@@ -215,7 +215,7 @@
               <% end %>
 
               <div class="circular-progression" style="margin-top: -15px">
-                <% prog_color = 
+                <% prog_color =
                   cond do @board.project.progression                                     <= 20  -> "#e63946"
                           @board.project.progression > 20 and @board.project.progression <= 40  -> "#e76f51"
                           @board.project.progression > 40 and @board.project.progression <= 60  -> "#ffba08"
@@ -270,19 +270,19 @@
                     </div>
                   </h2>
                 <% end %>
-              
+
                 <%= if @is_contributor do %>
                   <h2 style="margin: 0; font-size: 12px; display: flex;">
-                    <i class="bi bi-list-task" style="font-size: 20px"></i> 
+                    <i class="bi bi-list-task" style="font-size: 20px"></i>
                     <div style="margin: 4 0 0 8">
                       Mes tâches sur "<%= @board.project.title %>"
                     </div>
                   </h2>
                 <% end %>
-              
+
                 <div class=" " style="margin: -31px 0 0 0; float: right;">
                   <p style="font-size: 10px; margin-bottom: 0px;"><!-- pour <b>
-                      <%= @board.project.active_client.company.name %> 
+                      <%= @board.project.active_client.company.name %>
                     </b>--><img class="profile-pic-header" src={
                       Routes.static_path(@socket, "/#{@board.project.active_client.company.logo}" ) } width="50"
                       style="position: relative; top: 10px; margin-left: 10px;" />
@@ -303,7 +303,7 @@
 
                   <span class="material-icons-round filter_icon filtandsortico filtericon_resized">person</span>
                   <form class="form_under_fieldset" phx-change="attributor_selected">
-        
+
                     <select class="field_under_form_under_fieldset select__resized" id="task_filter" name="attributor_select">
                       <option value="" selected disabled hidden>Attributeur</option>
                       <option value="9000">Tout</option>
@@ -313,13 +313,13 @@
                       </option>
                       <% end %>
                     </select>
-    
+
                   </form>
-    
+
                 <span
                   class="material-icons-round filter_icon filtandsortico filtericon_resized">supervisor_account</span>
                 <form class="form_under_fieldset" phx-change="contributor_selected">
-    
+
                   <select class="field_under_form_under_fieldset select__resized" id="task_filter"
                     name="contributor_select">
                     <option value="" selected disabled hidden>Contributeur</option>
@@ -331,15 +331,15 @@
                     <% end %>
                     <option value="-1">Sans contributeur</option>
                   </select>
-    
+
                 </form>
-    
+
                 <% end %>
-                
+
                 <%= if @is_admin or @is_attributor do %>
                   <span class="material-icons-round filt_andsortico filtericon_resized" style="display:flex">search</span>
                 <% end %>
-                
+
                 <form class="form_under_fieldset" phx-change="search_task">
                   <input class="field_under_form_under_fieldset select__resized" autocomplete="off" type="text"
                     name="search-a" style="max-width: 100px; line-height: 10px;" placeholder="Rechercher ici">
@@ -398,28 +398,28 @@
               <%= if @is_admin or @is_attributor do %>
                 <div class="column" style="max-width: 42%; margin-top: -10px;">
                   <%= if @is_admin or @is_attributor or @is_contributor do %>
-                    <div 
-                      class="card-button-green" 
-                      type="button" 
+                    <div
+                      class="card-button-green"
+                      type="button"
                       phx-click="show_task_modal"
                       style="font-size: 10px; height: 30px; margin-top: 4px;"
                     >
                       Nouvelle tâche
                     </div>
 
-                    <div 
-                      class="card-button" 
-                      type="button" 
+                    <div
+                      class="card-button"
+                      type="button"
                       phx-click="show-secondary"
                       style="font-size: 10px; height: 30px; margin-top: 4px;"
                     >
                       Création sous-tâche
                     </div>
-                    
+
                     <%= if @is_admin or @is_attributor do %>
-                      <div 
-                        class="card-button-orange" 
-                        type="button" 
+                      <div
+                        class="card-button-orange"
+                        type="button"
                         phx-click="show_hidden_tasks"
                         style="font-size: 10px; height: 30px; margin-top: 4px;"
                       >
@@ -432,28 +432,28 @@
               <% else %>
                 <div class="column" style="min-width: 25%">
                   <%= if @is_admin or @is_attributor or @is_contributor do %>
-                  <div 
-                    class="card-button-green" 
-                    type="button" 
+                  <div
+                    class="card-button-green"
+                    type="button"
                     phx-click="show_task_modal"
                     style="font-size: 10px; height: 30px; margin-top: -8px;"
                   >
                     Nouvelle tâche
                   </div>
 
-                  <div 
-                    class="card-button" 
-                    type="button" 
+                  <div
+                    class="card-button"
+                    type="button"
                     phx-click="show-secondary"
                     style="font-size: 10px; height: 30px; margin-top: -8px;"
                   >
                     Création sous-tâche
                   </div>
-                    
+
                     <%= if @is_admin or @is_attributor do %>
-                      <div 
-                        class="card-button-orange" 
-                        type="button" 
+                      <div
+                        class="card-button-orange"
+                        type="button"
                         phx-click="show_hidden_tasks"
                         style="font-size: 10px; height: 30px; margin-top: 4px;"
                       >
@@ -466,7 +466,7 @@
               <% end %>
 
               <div class="circular-progression" style="margin-top: 10px">
-                <% prog_color = 
+                <% prog_color =
                   cond do @board.project.progression                                     <= 20  -> "#e63946"
                           @board.project.progression > 20 and @board.project.progression <= 40  -> "#e76f51"
                           @board.project.progression > 40 and @board.project.progression <= 60  -> "#ffba08"
@@ -510,11 +510,11 @@
     <div class="col-md-10" style="width: 83%">
   <section id="the_board" class="board" phx-hook="Board" style="">
     <%= for stage <- @board.stages do %>
-    <div data-stage-id={ stage.id } class={if stage.status_id != 1 do "stage basecontents__without__shadow__and__radius" 
+    <div data-stage-id={ stage.id } class={if stage.status_id != 1 do "stage basecontents__without__shadow__and__radius"
     else "stage_first basecontents__without__shadow__and__radius" end}>
     <!-- COLORATION DE LENTETE DES TACHES-->
-    
-    <div class="stage__header basecontents__without__radius" id="stage__header__sticked" 
+
+    <div class="stage__header basecontents__without__radius" id="stage__header__sticked"
     style={
       "background: #{
         if stage.name == "A faire", do: "#817d7d",
@@ -540,8 +540,8 @@
         <%= if @is_admin or @is_attributor or @curr_user_id==card.task.contributor_id do %>
 
         <div>
-          <div data-card-id={ card.id } class={" #{if card.task.status_id ==5 and card.task.clients_request != nil and 
-            card.task.clients_request.finished == true do "" else "card" end} 
+          <div data-card-id={ card.id } class={" #{if card.task.status_id ==5 and card.task.clients_request != nil and
+            card.task.clients_request.finished == true do "" else "card" end}
           basecontents__without__radius #{if is_nil(card.task.parent_id)
             do "" end}"} style={"display: #{ if card.task.hidden, do: "none !important" }; margin-bottom: 50px;#{if PmLogin.Monitoring.is_late(card.task)<0 && card.task.status_id<5, do: "border: 3px solid red;"}"}>
               <%= if card.task.status_id == 2 do %>
@@ -559,7 +559,7 @@
             <% _ -> %><div style="display: inline-table; font-size: 10px; padding: 4px 8px 2px 8px;"
               class="priority__point"></div>
             <% end %>
-            
+
             <%
               performed_duration = card.task.performed_duration / 60
                                 # trunc, retourne la partie entier
@@ -570,7 +570,7 @@
             %>
 
             <%= if @data_card_id != nil do %>
-              <%= if card.id == @data_card_id do %> 
+              <%= if card.id == @data_card_id do %>
                 <%= if @total >= card.task.estimated_duration do %>
                    <div id="task-timer" class="task-timer-record" style="background-color: #e74c3c;">
                     <i class="bi bi-exclamation-triangle"></i>
@@ -685,12 +685,12 @@
             </div>
           </div>
 
-          <div style="display: flex; 
+          <div style="display: flex;
                  box-shadow: 0px 11px 35px 2px rgba(90, 87, 87, 0.2);
-                 background-color: #34495e; 
-                 float: right; 
+                 background-color: #34495e;
+                 float: right;
                  margin-top: -50px;
-                 margin-right: 4px; 
+                 margin-right: 4px;
                  padding-right: 4px;
                  z-index: 0;
                 ">
@@ -712,30 +712,30 @@
 
             <%= if @is_attributor or @is_contributor do %>
               <%= if card.task.status_id == 3 do %>
-                <a 
-                  id={"starting_clock"} 
-                  title="Démarrer le compteur" 
+                <a
+                  id={"starting_clock"}
+                  title="Démarrer le compteur"
                   style="font-size: 20px;"
-                  class="bi bi-play modif__icon" 
+                  class="bi bi-play modif__icon"
                   phx-click={
-                    Phoenix.LiveView.JS.push("start_clock") 
+                    Phoenix.LiveView.JS.push("start_clock")
                     |> Phoenix.LiveView.JS.hide(to: "#starting_clock")
                     |> Phoenix.LiveView.JS.show(to: "#stoping_clock-#{card.id}")
-                  } 
+                  }
                   phx-value-id={card.id}>
                 </a>
-            
-                <a 
-                  id={"stoping_clock-#{card.id}"} 
-                  title="Arrêter le compteur" 
+
+                <a
+                  id={"stoping_clock-#{card.id}"}
+                  title="Arrêter le compteur"
                   style="display: none; font-size: 20px;"
-                  class="bi bi-stop modif__icon" 
+                  class="bi bi-stop modif__icon"
                   phx-click={
-                    Phoenix.LiveView.JS.push("stop_clock") 
+                    Phoenix.LiveView.JS.push("stop_clock")
                     |> Phoenix.LiveView.JS.show(to: "#starting_clock")
                     |> Phoenix.LiveView.JS.hide(to: "#stoping_clock-#{card.id}")
-                  } 
-                  phx-value-id={card.id}> 
+                  }
+                  phx-value-id={card.id}>
                 </a>
               <% end %>
             <% end %>
@@ -766,7 +766,7 @@
 
     <div class="stage_history" style="background-color: #fff;">
         <div style="height: 100%; padding-left: 15px;padding-right: 10px;">
-          <div 
+          <div
             style={"
               display: inline-block;
               color: #fff;
@@ -789,7 +789,7 @@
             </div>
             <div class="card__name" style="font-size: 11px;margin-left:13px">
               <a href={ Routes.task_path(@socket, :show, task_history.task.id) } ><%= task_history.task.title %></a>
-            </div>          
+            </div>
             <p style="font-size: 11px;margin-left:13px">
               <%= task_history.status_from.title %> &#x2192; <%= task_history.status_to.title %>
             </p>
@@ -810,7 +810,7 @@
             </div>
             <div class="card__name" style="font-size: 11px;margin-left:13px">
               <a href={ Routes.task_path(@socket, :show, task.id) } ><%= task.title %></a>
-            </div>          
+            </div>
             <p style="font-size: 11px;margin-left:13px">
               Créé
             </p>
@@ -818,14 +818,15 @@
           <% end %>
           <% end %>
         </div>
-      
+
     </div>
   </div>
 </div>
 
   <%= live_component(ReasonTaskHistoryModalLive, id: "confirm-arch" , title: "Motif" , body: nil,
           right_button: nil, right_button_action: nil, right_button_param: nil, left_button: nil,
-          left_button_action: nil, show_reason_task_history_modal: @show_reason_task_history_modal, 
+          left_button_action: nil, show_reason_task_history_modal: @show_reason_task_history_modal,
+          empty_reason: @empty_reason, pro_id: @pro_id, curr_user_id: @curr_user_id, old_task: @old_task,
           task_history: @task_history) %>
 
 

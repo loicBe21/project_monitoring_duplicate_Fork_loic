@@ -21,53 +21,58 @@ defmodule PmLoginWeb.LiveComponent.ReasonTaskHistoryModalLive do
     <div id={"modal-#{@id}"}>
       <!-- Modal Background -->
       <div id="modif_modal_container" class="modal-container" style={"visibility: #{ if @show_reason_task_history_modal, do: "visible", else: "hidden" }; opacity: #{ if @show_reason_task_history_modal, do: "1 !important", else: "0" };"}>
-        <%= if not is_nil(@task_history) do %>
-        <div class="modal-inner-container">
-          <div class="modal-card-task">
-            <div class="modal-inner-card" style="width: 450px">
-              <!-- Title -->
-              <%= if @title != nil do %>
-              <div class="modal-title">
-                <%= @title %>
-              </div>
-              <% end %>
 
-              <!-- Body -->
-              <%= if @body != nil do %>
-              <div class="modal-body">
-                <%= @body %>
-              </div>
-              <% end %>
+          <div class="modal-inner-container">
+            <div class="modal-card-task">
+              <div class="modal-inner-card" style="width: 450px">
+                <!-- Title -->
+                <%= if @title != nil do %>
+                <div class="modal-title">
+                  <%= @title %>
+                </div>
+                <% end %>
 
-              <!-- MY FORM -->
-              <div class="modal-body">
+                <!-- Body -->
+                <%= if @body != nil do %>
+                <div class="modal-body">
+                  <%= @body %>
+                </div>
+                <% end %>
 
-              <form phx-submit="confirm_reason" style="margin: 0" novalidate>
-                 <table class="table-tasks-mobile" style="font-size: 11px;">
-                    <tbody>
-                      <tr><p style="color: #727272;"><%= @task_history.task.title %></p></tr>
-                      <tr>
-                        <td data-label="Motif">
-                          <input required type="text" id="task_history_reason" name="reason" style="width: 300px; margin-bottom: 0;" placeholder="Motif"/>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                <!-- MY FORM -->
+                <div class="modal-body">
 
-                      <div class="modal-buttons" style="margin-top: -15px; margin-bottom: -15px;">
-                        <div class="">
-                          <%= submit "Valider", class: "button right-button" %>
+                <form phx-submit="confirm_reason" style="margin: 0" novalidate>
+                  <table class="table-tasks-mobile" style="font-size: 11px;">
+                      <tbody>
+                        <%= if @old_task != nil do %>
+                          <tr><p style="color: #727272;"><%= @old_task.title %></p></tr>
+                        <% end %>
+                        <tr>
+                          <td data-label="Motif">
+                            <input required type="text" id="task_history_reason" name="reason" style="width: 300px; margin-bottom: 0;" placeholder="Motif"/>
+                            <%= if not is_nil(@empty_reason) do %>
+                              <p><%= @empty_reason %></p>
+                            <% end %>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+
+                        <div class="modal-buttons" style="margin-top: -15px; margin-bottom: -15px;">
+                          <div class="">
+                            <%= submit "Valider", class: "button right-button" %>
+                          </div>
                         </div>
-                      </div>
 
-              </form>
+                </form>
+                </div>
+
+
               </div>
-
-
             </div>
           </div>
-        </div>
-        <% end %>
+
       </div>
     </div>
     """

@@ -22,6 +22,8 @@ defmodule PmLogin.Monitoring.TaskHistory do
     task_history
     |> cast(attrs, [:task_id, :intervener_id, :tracing_date, :status_from_id, :status_to_id, :reason])
     |> validate_required([:task_id, :intervener_id, :status_from_id, :status_to_id])
+    |> validate_required(:reason, message: "Motif ne devrait pas etre vide")
+    |> put_change(:inserted_at, Services.current_date)
   end
 
   def create_changeset(record, attrs) do
